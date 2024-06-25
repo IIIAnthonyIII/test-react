@@ -1,11 +1,28 @@
 import "./Paciente.css";
-import React from "react";
-import { Space, Table, Tag } from "antd";
+import React, { useState } from "react";
+import { Space, Table, Tag, Button } from "antd";
+import CreatePaciente from "./Create/CreatePaciente";
 
 const Paciente = () => {
   let data = [];
   let columns = [];
   let filter = [];
+
+  //Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  // Fin Modal
 
   //Cargar data
   data = [
@@ -119,7 +136,14 @@ const Paciente = () => {
       align: "center",
       render: (_, record) => (
         <Space size="middle">
-          <button>Editar {record.key}</button>
+          <Button onClick={showModal}>
+            Editar {record.key}
+          </Button>
+          <CreatePaciente
+            isModalOpen={isModalOpen}
+            handleOk={handleOk}
+            handleCancel={handleCancel}
+          />
           <button>Eliminar</button>
         </Space>
       ),

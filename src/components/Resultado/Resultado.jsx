@@ -1,4 +1,5 @@
 import React from 'react';
+import './Resultado.css';
 
 const Resultado = () => {
   return (

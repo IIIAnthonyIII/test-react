@@ -22,10 +22,9 @@ const Navigation = () => {
           className={activeNav === item.id ? "active" : ""}
         >
           {/* <i className={`fa-solid ${item.icon}`}></i> */}
-          {item.id}
+          ({item.id}) - 
         </NavLink>
       ))}
-      hola desde el Navigation
     </nav>
   );
 };

@@ -1,33 +1,17 @@
 import "./Paciente.css";
 import React, { useState } from "react";
-import { Space, Table, Tag, Button } from "antd";
-import CreatePaciente from "./Create/CreatePaciente";
+import { Space, Table, Tag, Button, notification } from "antd";
+import EditPaciente from "./Edit/EditPaciente";
 
 const Paciente = () => {
   let data = [];
   let columns = [];
   let filter = [];
 
-  //Modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
-  // Fin Modal
-
   //Cargar data
   data = [
     {
-      key: "1",
+      id: "1",
       name: "John Brown",
       chinese: 98,
       math: 60,
@@ -35,7 +19,7 @@ const Paciente = () => {
       tags: ["nice", "developer"],
     },
     {
-      key: "2",
+      id: "2",
       name: "Jim Green",
       chinese: 98,
       math: 60,
@@ -43,7 +27,7 @@ const Paciente = () => {
       tags: ["loser"],
     },
     {
-      key: "3",
+      id: "3",
       name: "Joe Black",
       chinese: 98,
       math: 90,
@@ -51,7 +35,7 @@ const Paciente = () => {
       tags: ["cool", "teacher"],
     },
     {
-      key: "4",
+      id: "4",
       name: "Jim Red",
       chinese: 88,
       math: 99,
@@ -136,15 +120,10 @@ const Paciente = () => {
       align: "center",
       render: (_, record) => (
         <Space size="middle">
-          <Button onClick={showModal}>
-            Editar {record.key}
+          <Button onClick={() => showEditModal(record)}>
+            Editar
           </Button>
-          <CreatePaciente
-            isModalOpen={isModalOpen}
-            handleOk={handleOk}
-            handleCancel={handleCancel}
-          />
-          <button>Eliminar</button>
+          <Button>Eliminar</Button>
         </Space>
       ),
     },
@@ -255,16 +234,62 @@ const Paciente = () => {
     console.log(sorter)
   };
 
+  //Modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
+  const showEditModal = (item) => {
+    setCurrentItem(item);
+    setIsModalOpen(true);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  const handleSubmit = (response) => {
+    console.log(response);
+    openNotification(response);
+    setIsModalOpen(false);
+  };
+  //Fin Modal
+
+  //Notification
+  const [api, contextHolder] = notification.useNotification();
+  const openNotification = (placement) => {
+    if (placement == 'Exito'){
+      api.success({
+        message: `${placement}`,
+        description: "Se ha editado correctamente",
+        showProgress: true,
+        placement: "topRight",
+      });
+    }else{
+      api.error({
+        message: `${placement}`,
+        description: "Ha habido un error, no se ha podido editar!!",
+        showProgress: true,
+        placement: "topRight",
+      });
+    }
+  };
+  //Fin Notification
+
   return (
     <div>
+      {contextHolder}
       <Table 
         columns={columns}
         dataSource={data}
+        rowKey={"id"}
         pagination={{
           pageSize: 2,
           position: ["bottomRight"]
         }}
-        onChange={handleTableChange} />;
+        onChange={handleTableChange} />
+      <EditPaciente
+        isModalOpen={isModalOpen}
+        handleCancel={handleCancel}
+        handleSubmit={handleSubmit}
+        initialValues={currentItem}
+      />
     </div>
   );
 };
